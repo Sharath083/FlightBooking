@@ -11,6 +11,7 @@ plugins {
 
 group = "com.example"
 version = "0.0.1"
+
 application {
     mainClass.set("com.example.ApplicationKt")
 
@@ -29,7 +30,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("com.h2database:h2:$h2_version")
-
+    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
