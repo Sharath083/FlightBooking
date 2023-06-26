@@ -8,7 +8,7 @@ data class UserDetails(val id: Int, val name: String, val password: String)
 @Serializable
 data class UserReq(val name:String, val password: String)
 
-object Articles : Table("table") {
+object Details : Table("table") {
     val id = integer("id").autoIncrement()
     val name = varchar("name", 12)
     val password = varchar("password", 10)

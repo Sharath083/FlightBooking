@@ -14,24 +14,24 @@ fun Route.insertDetails(){
     route("/user"){
         post {
             val user=call.receive<UserReq>()
-            ob.addNewArticle(user)
+            ob.addNewUser(user)
             call.respond("Details are inserted")
 
         }
         get {
-            call.respond(ob.allArticles())
+            call.respond(ob.allUsers())
         }
         get("{id}") {
             val id = call.parameters["id"] ?: return@get call.respondText(
                 "Missing id",
                 status = HttpStatusCode.BadRequest
             )
-            val result=ob.Article(id.toInt())
+            val result=ob.findById(id.toInt())
             call.respondNullable(result)
         }
         put {
             val user=call.receive<UserDetails>()
-            ob.editArticle(user)
+            ob.editUser(user)
 
             call.respond(" Details are updated")
         }

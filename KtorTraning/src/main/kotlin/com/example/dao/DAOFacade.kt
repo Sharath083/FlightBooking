@@ -5,8 +5,8 @@ import com.example.model.UserReq
 
 interface DAOFacade {
 
-    suspend fun allArticles(): List<UserDetails>
-    suspend fun addNewArticle(d:UserReq): UserDetails?
-    suspend fun Article(id:Int):UserDetails?
-    suspend fun editArticle(details:UserDetails): Boolean
+    suspend fun allUsers(): List<UserDetails>
+    suspend fun addNewUser(d:UserReq): UserDetails?
+    suspend fun findById(id:Int):UserDetails?
+    suspend fun editUser(details:UserDetails): Boolean
 }
