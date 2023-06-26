@@ -1,11 +1,11 @@
 package com.example
 
+import com.example.dao.DatabaseFactory
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import com.example.plugins.*
 import io.ktor.http.*
-import io.ktor.http.HttpHeaders.XHttpMethodOverride
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.ratelimit.*
@@ -17,9 +17,12 @@ import kotlin.time.Duration.Companion.seconds
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
+
+
 }
 
 fun Application.module() {
+    DatabaseFactory.init()
     install(ContentNegotiation){
         json(Json {
             prettyPrint = true
