@@ -3,10 +3,10 @@ package com.example.model
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 
-
-data class Article(val id: Int, val name: String, val password: String)
 @Serializable
-data class ArticleReq(val name:String,val password: String)
+data class UserDetails(val id: Int, val name: String, val password: String)
+@Serializable
+data class UserReq(val name:String, val password: String)
 
 object Articles : Table("table") {
     val id = integer("id").autoIncrement()

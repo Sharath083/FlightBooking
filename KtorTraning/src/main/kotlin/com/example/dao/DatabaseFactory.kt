@@ -1,6 +1,5 @@
 package com.example.dao
 
-import com.example.model.Article
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
