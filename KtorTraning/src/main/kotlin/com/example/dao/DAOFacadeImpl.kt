@@ -9,9 +9,9 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class DAOFacadeImpl:DAOFacade {
-    override suspend fun allUsers(): List<UserDetails> = DatabaseFactory.dbQuery {
+    override suspend fun allUsers(): List<UserDetails?> = DatabaseFactory.dbQuery {
 
-        Details.selectAll().map(::resultRowToArticle)
+        Details.selectAll().map{resultRowToArticle(it)}
     }
     override suspend fun addNewUser(d: UserReq): UserDetails? = DatabaseFactory.dbQuery {
         val insertStatement = Details.insert {
@@ -19,13 +19,13 @@ class DAOFacadeImpl:DAOFacade {
             it[password]=d.password
 
         }
-        insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToArticle)
+        insertStatement.resultedValues?.singleOrNull()?.let{resultRowToArticle(it)}
     }
 
     override suspend fun findById(id:Int): UserDetails? {
         return DatabaseFactory.dbQuery {
 
-            Details.select(Details.id eq id).map(::resultRowToArticle).singleOrNull()
+            Details.select(Details.id eq id).map{resultRowToArticle(it)}.singleOrNull()
 
         }
     }
@@ -39,6 +39,12 @@ class DAOFacadeImpl:DAOFacade {
 
     }
 
+    override suspend fun userLogin(details: UserReq): UserDetails? {
+
+        return DatabaseFactory.dbQuery {
+            Details.select{(Details.password eq details.password) and (Details.name eq details.name)}.map { resultRowToArticle(it)}.firstOrNull()
+        }
+    }
 
     private fun resultRowToArticle(row:ResultRow): UserDetails {
         return  UserDetails(row[Details.id], row[Details.name],row[Details.password])

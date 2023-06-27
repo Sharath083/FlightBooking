@@ -7,6 +7,8 @@ import io.ktor.server.netty.*
 import com.example.plugins.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.plugins.statuspages.*
@@ -14,14 +16,11 @@ import io.ktor.server.response.*
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration.Companion.seconds
 
-fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-
-}
 
 fun Application.module() {
+
     DatabaseFactory.init()
     install(ContentNegotiation){
         json(Json {
@@ -44,6 +43,7 @@ fun Application.module() {
     }
 
     configureRouting()
+    configureSecurity(environment.config)
 
 }
 

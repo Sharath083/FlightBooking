@@ -12,6 +12,7 @@ import java.io.File
 
 
 fun Route.customerRouting(){
+
     route("/customer"){
         rateLimit {
             get {
@@ -70,8 +71,9 @@ fun Route.customerRouting(){
             else{
                 call.respondText("Customer with $id is not found", status = HttpStatusCode.NotFound)
             }
-
-
         }
+
+
+
     }
 }
