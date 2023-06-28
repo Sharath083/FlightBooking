@@ -3,8 +3,6 @@ package com.example.routes
 
 import com.example.dao.DAOFacadeImpl
 import com.example.dao.TokenGenerator
-import com.example.model.TokenResponse
-
 import com.example.model.UserDetails
 import com.example.model.UserReq
 import io.ktor.http.*
@@ -17,7 +15,7 @@ import io.ktor.server.routing.*
 
 
 
-fun Route.insertDetails(tokenClass:TokenGenerator, daoFacadeImpl:DAOFacadeImpl){
+fun Route.insertDetails( daoFacadeImpl:DAOFacadeImpl){
 
 //    val tokenClass= TokenGenerator()
     route("/user"){
@@ -45,29 +43,9 @@ fun Route.insertDetails(tokenClass:TokenGenerator, daoFacadeImpl:DAOFacadeImpl){
         }
 
 
-        post("/login") {
 
-            val customer=call.receive<UserReq>()
-            if(daoFacadeImpl.userLogin(customer)!=null){
-                val token=tokenClass.createToken(customer)
-                call.respond(token)
 
-            }
-            else{
-                call.respond("Invalid User Details")
-            }
 
-        }
-        authenticate ("jwt-token"){
-            get ("/validate"){
-                val principal = call.principal<JWTPrincipal>()
-                val username = principal!!.payload.getClaim("name").asString()
-                val expiresAt = principal.expiresAt?.time?.minus(System.currentTimeMillis())
-                call.respondText("Hello, $username! Token is expired at $expiresAt ms.")
-
-            }
-
-        }
 
     }
 }

@@ -16,28 +16,34 @@ fun Application.configureSecurity(config: ApplicationConfig) {
 
     val subject = config.property("jwt.subject").getString()
     val audience = config.property("jwt.audience").getString()
-    val domain = config.property("jwt.issuer").getString()
+    val issuer = config.property("jwt.issuer").getString()
     val configRealm = config.property("jwt.realm").getString()
     val secretKey = config.property("jwt.secret").getString()
-    install(Authentication){
-        jwt("jwt-token"){
-            realm= configRealm
+
+
+    install(Authentication) {
+        jwt("token") {
+            realm = configRealm
             verifier(
                 JWT.require(Algorithm.HMAC256(secretKey))
                     .withAudience(audience)
-                    .withIssuer(domain)
+                    .withIssuer(issuer)
                     .withSubject(subject)
                     .build()
             )
-            validate { jwtCredential ->
-                if (jwtCredential.payload.audience.contains(audience)
-                    && jwtCredential.payload.expiresAt.time> getTimeMillis()
-                ){
-                    JWTPrincipal(jwtCredential.payload)
-                }else{
-                    null
+        }
+    }
+        install(Authentication){
+            jwt("token"){
+                validate { jwtCredential ->
+                    if (jwtCredential.payload.audience.contains(audience)
+                        && jwtCredential.payload.expiresAt.time> getTimeMillis()
+                    ){
+                        JWTPrincipal(jwtCredential.payload)
+                    }else{
+                        null
+                    }
                 }
-            }
             challenge { _, _ ->
                 call.respond(HttpStatusCode.Unauthorized, "The token is invalid.")
             }

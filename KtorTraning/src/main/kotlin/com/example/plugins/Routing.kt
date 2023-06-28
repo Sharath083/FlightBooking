@@ -21,7 +21,9 @@ fun Application.configureRouting() {
         listOrders()
         getOrderRoute()
         totalizeOrderRoute()
-        insertDetails(tokenProviderService,daoFacadeImpl)
+        insertDetails(daoFacadeImpl)
+        token(tokenProviderService,daoFacadeImpl)
+
     }
 
 }
