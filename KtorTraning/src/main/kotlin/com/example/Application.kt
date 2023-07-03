@@ -80,7 +80,7 @@ fun Application.module() {
 //    }
 
 
-    configureSecurity(environment.config)
+//    configureSecurity(environment.config)
 
 
 }

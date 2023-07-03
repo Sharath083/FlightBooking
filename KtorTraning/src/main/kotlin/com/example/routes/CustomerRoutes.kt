@@ -25,13 +25,13 @@ fun Route.customerRouting(){
             }
         }
         get("/download"){//we can get image through
-            val file = File("C:\\Users\\sharathkumar.b\\Pictures\\Screenshots\\PostManScreenShots/Screenshot (22).png")
+            val file = File("C:\\Users\\sharathkumar.b\\Pictures\\Screenshots/image.png")
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, "ktorTraining.png")
                     .toString())
-            call.response.status(HttpStatusCode(22,"Pic downloaded"))
-//            call.respondRedirect("{id?}", permanent = true) TO MOVE TO OTHER PAGE
+//            call.response.status(HttpStatusCode(22,"Pic downloaded"))
+
 
             call.respondFile(file)
 
