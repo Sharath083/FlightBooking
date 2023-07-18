@@ -1,9 +1,6 @@
-package com.example.objects
+package com.example.data.response
 
 import kotlinx.serialization.Serializable
-
-@Serializable
-data class TravelDetails(val ticketNumber:Int,val flight:List<Flight>?)
 
 
 @Serializable

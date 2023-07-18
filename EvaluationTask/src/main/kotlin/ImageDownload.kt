@@ -10,8 +10,7 @@ class ImageDownload {
         val file= File(location)
         listLinks.openStream().use {
                 input->file.outputStream().use {
-                output->input.copyTo(output)
-        }
+                output->input.copyTo(output) }
         }
         println("Downloaded and Stored At $location")
     }
@@ -38,6 +37,7 @@ fun main() {
         "http://localhost:8080/customer/download",
         "http://localhost:8080/customer/download",
         "http://localhost:8080/customer/download",
+        "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2hlbm5haXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80"
     )
     runBlocking {
         val imageDownload=ImageDownload()

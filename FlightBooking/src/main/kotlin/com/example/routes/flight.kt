@@ -1,14 +1,12 @@
 package com.example.routes
 
-import com.example.dao.DAOImplementation
-import com.example.objects.Flight
+import com.example.logic.DAOImplementation
+import com.example.data.request.Flight
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.util.*
-import kotlinx.serialization.Serializable
 
 fun Route.flightFunctions(daoImplementation: DAOImplementation){
     route("/flight"){

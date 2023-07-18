@@ -38,6 +38,7 @@ fun Route.customerRouting(){
 
 
         }
+
         get("{id?}") {
             val id = call.parameters["id"] ?: return@get call.respondText(
                 "Missing id",

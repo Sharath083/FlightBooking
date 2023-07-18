@@ -1,8 +1,13 @@
 package com.example.routes
 
-import com.example.dao.*
-import com.example.dao.Methods
-import com.example.objects.*
+import com.example.dao.PassengerDao
+import com.example.logic.Methods
+import com.example.data.response.TravelDetails
+import com.example.data.response.TravelTime
+import com.example.data.request.Passenger
+import com.example.data.request.Filter
+import com.example.data.response.BookDetailsOut
+import com.example.logic.DAOImplementation
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -11,18 +16,18 @@ import io.ktor.server.routing.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.deleteAll
+import org.jetbrains.exposed.sql.deleteWhere
 
 
 fun Route.passengerFunctions(daoImplementation: DAOImplementation) {
     route("/passenger") {
         val methods = Methods()
 
-        post("/newPassenger") {
+        post("/register") {
             val name = call.receive<Passenger>()
-            daoImplementation.addNewPassenger(name)
-            call.respond("${name.name} is inserted")
+            daoImplementation.userRegistration(name)
+            call.respond("${name.name} is Added")
         }
         get("/travelTime") {
             val input = call.receive<Passenger>()
@@ -66,6 +71,7 @@ fun Route.passengerFunctions(daoImplementation: DAOImplementation) {
 
         post("/book") {
             val params = call.receive<BookDetailsOut>()
+
             if (daoImplementation.getFlight(params.flightNumber).isNotEmpty()) {
                 daoImplementation.bookFlight(params)
                 call.respond("${params.flightNumber} has booked")
@@ -104,13 +110,62 @@ fun Route.passengerFunctions(daoImplementation: DAOImplementation) {
             call.respond("$count Passengers has booked the Flight")
 
         }
-        get("/{id}"){
-            val i=call.parameters["id"]?: return@get call.respondText(
+        get("/Id={id}"){
+            val id=call.parameters["id"]?: return@get call.respondText(
                 "Missing id",
                 status = HttpStatusCode.BadRequest
             )
-            call.respond(daoImplementation.dds(i))
+            val result=daoImplementation.getFlightById(id.toInt())
+            if(result.isNotEmpty()){
+                call.respond(result)
+            }
+            else{
+                call.respond("$id does not have any bookings")
+            }
         }
+        get("/filterSource&Destination"){
+            val input=call.receive<Filter>()
+            val result=daoImplementation.filterBySourceDestination(input).sortedBy { methods.timeTaken(it.departureTime,it.arrivalTime) }
+
+            if(result.isNotEmpty()){
+
+                call.respond(result )
+            }
+            else{
+                call.respond("THERE ARE NO FLIGHTS BETWEEN ${input.source} AND ${input.destination}")
+            }
+        }
+
+
+        get("/filterBy/{type}") {
+            val input=call.parameters["type"]?: return@get call.respondText(
+                "Missing id",
+                status = HttpStatusCode.BadRequest
+            )
+
+            val result = daoImplementation.getFlightAll()
+
+            when (input.lowercase()) {
+                "price" -> call.respond(result.sortedBy { it.price })
+                "duration" -> call.respond(result.sortedBy {
+                    methods.timeTaken(it.departureTime, it.arrivalTime) })
+                else-> call.respond("ENTER VALID FILTER")
+            }
+
+        }
+
+        delete("/delete/{id}") {
+            val id=call.parameters["id"]?:return@delete call.respondText("Missing Id", status = HttpStatusCode.BadRequest)
+            val res= daoImplementation.removeUser(id.toInt())
+            if(res){
+                call.respond("$id is removed")
+            }
+            else{
+                call.respond("User does not exists")
+            }
+
+        }
+
     }
 }
 
