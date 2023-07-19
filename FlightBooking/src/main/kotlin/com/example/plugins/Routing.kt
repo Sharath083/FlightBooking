@@ -8,7 +8,6 @@ import io.ktor.server.application.*
 
 fun Application.configureRouting() {
     val daoImplementation=DAOImplementation()
-
     routing {
         flightFunctions(daoImplementation)
         passengerFunctions(daoImplementation)

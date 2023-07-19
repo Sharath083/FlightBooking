@@ -11,7 +11,7 @@ import com.example.data.response.PassengerLogin
 interface DAOInterface {
     suspend fun addNewFlight(d: Flight): Flight?
     suspend fun removeFLight(id:String): Boolean
-    suspend fun bookFlight(details: BookDetailsOut): BookDetails?
+    suspend fun bookFlight(flightId: String,pId:Int): BookDetails?
     suspend fun getFlight(fId:String):List<Flight>
     suspend fun userRegistration(details: Passenger):Passenger?
     suspend fun getPassengerId(name:String): PassengerId?

@@ -35,11 +35,11 @@ class DAOImplementation:DAOInterface {
         FLightDetailsDao.deleteWhere { flightNumber eq id }>0
     }
 
-    override suspend fun bookFlight(details: BookDetailsOut): BookDetails? =
+    override suspend fun bookFlight(flightId: String,pId:Int): BookDetails? =
         DatabaseFactory.dbQuery {
             val insertStatement= BookDetailsDao.insert {
-                it[passengerId]=details.passengerId
-                it[flightNumber]=details.flightNumber
+                it[passengerId]=pId
+                it[flightNumber]=flightId
             }
             insertStatement.resultedValues?.singleOrNull()?.let { resultRowBooking(it) }
     }
