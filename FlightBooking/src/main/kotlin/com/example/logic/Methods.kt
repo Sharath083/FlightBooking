@@ -20,9 +20,9 @@ class Methods(private val config: ApplicationConfig) {
         return LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm")).toSecondOfDay()
 
     }
-    fun tokenGenerator(name:String):String{
+    fun tokenGenerator(name:String,secret:String):String{
 
-        val secret = config.property("jwt.secret").getString()
+//        val secret = config.property("jwt.secret").getString()
         val issuer = config.property("jwt.issuer").getString()
         val audience = config.property("jwt.audience").getString()
         val myRealm = config.property("jwt.realm").getString()

@@ -10,6 +10,7 @@ import com.example.data.request.Passenger
 import com.example.data.response.BookDetailsOut
 import com.example.data.response.PassengerId
 import com.example.data.request.Filter
+import com.example.data.response.PassengerDetails
 import com.example.data.response.PassengerLogin
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -18,15 +19,15 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 class DAOImplementation:DAOInterface {
 
 
-    override suspend fun addNewFlight(d: Flight): Flight?= DatabaseFactory.dbQuery {
+    override suspend fun addNewFlight(input: Flight): Flight?= DatabaseFactory.dbQuery {
         val insertStatement = FLightDetailsDao.insert {
-            it[flightNumber]=d.flightNumber
-            it[airline]=d.airline
-            it[price]=d.price
-            it[airport]=d.source
-            it[destination]=d.destination
-            it[departureTime]=d.departureTime
-            it[arrivalTime]=d.arrivalTime
+            it[flightNumber]=input.flightNumber
+            it[airline]=input.airline
+            it[price]=input.price
+            it[airport]=input.source
+            it[destination]=input.destination
+            it[departureTime]=input.departureTime
+            it[arrivalTime]=input.arrivalTime
         }
         insertStatement.resultedValues?.singleOrNull()?.let{resultRowToFlight(it)}
     }
@@ -94,6 +95,15 @@ class DAOImplementation:DAOInterface {
         PassengerDao.deleteWhere { PassengerDao.id eq id }>0
     }
 
+    override suspend fun cancelTicket(id:Int,flightId: String): Boolean =DatabaseFactory.dbQuery {
+        BookDetailsDao.deleteWhere { flightNumber eq flightId and (passengerId eq id)}>0
+    }
+
+    override suspend fun getAllPassengers(): List<PassengerDetails> = DatabaseFactory.dbQuery {
+        (BookDetailsDao innerJoin PassengerDao).slice(PassengerDao.name,PassengerDao.email).selectAll()
+            .map{resultRowPassengerDetails(it)}
+    }
+
 
     private fun resultRowToFlight(row: ResultRow): Flight {
         return  Flight(row[FLightDetailsDao.flightNumber], row[FLightDetailsDao.airline], row[FLightDetailsDao.price], row[FLightDetailsDao.airport],row[FLightDetailsDao.destination],row[FLightDetailsDao.departureTime],row[FLightDetailsDao.arrivalTime])
@@ -114,4 +124,9 @@ class DAOImplementation:DAOInterface {
     private fun resultRowLogin(row: ResultRow):PassengerLogin{
         return PassengerLogin(row[PassengerDao.name],row[PassengerDao.password])
     }
+    private fun resultRowPassengerDetails(row: ResultRow): PassengerDetails {
+        return PassengerDetails(row[PassengerDao.name],row[PassengerDao.email])
+    }
 }
+
+

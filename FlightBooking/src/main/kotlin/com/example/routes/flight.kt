@@ -6,6 +6,7 @@ import com.example.logic.DAOImplementation
 import com.example.data.request.Flight
 import com.example.exceptions.FlightNotFoundException
 import com.example.exceptions.SameFlightIdException
+import com.example.exceptions.UserNotFoundException
 import com.example.logic.Methods
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -22,7 +23,7 @@ fun Route.flightFunctions(daoImplementation: DAOImplementation){
         post("/adminLogin"){
             val adminLogin=call.receive<AdminLogin>()
             if(adminLogin.name == "Admin" && adminLogin.password=="123456") {
-                val token=methods.tokenGenerator(adminLogin.name)
+                val token=methods.tokenGenerator(adminLogin.name,"login Admin")
                 call.respond(hashMapOf("token" to token ,"Expires in " to "6  Minutes"))
             }
             else{
@@ -73,6 +74,15 @@ fun Route.flightFunctions(daoImplementation: DAOImplementation){
                 val count=daoImplementation.getPassengerCountByFlight(input)
                 call.respond("$count Passengers has booked the Flight")
 
+            }
+        }
+        authenticate("Admin"){
+            get("getAllPassengers") {
+                val result = daoImplementation.getAllPassengers().toSet()
+                if(result.isNotEmpty())
+                    call.respond(result)
+                else
+                    throw UserNotFoundException("There Are No User That Booked Flight")
             }
         }
     }

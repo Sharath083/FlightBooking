@@ -14,3 +14,7 @@ object BookDetailsDao :Table("booking_table"){
     override val primaryKey = PrimaryKey(ticketNo)
 
 }
+
+class sa(){
+
+}

@@ -41,7 +41,7 @@ fun Route.passengerFunctions(daoImplementation: DAOImplementation) {
             val details=call.receive<PassengerLogin>()
             val result=daoImplementation.userLogin(details)
             if(result.isNotEmpty()){
-                val token=methods.tokenGenerator(details.name)
+                val token=methods.tokenGenerator(details.name,"login user")
 
                 call.respond(hashMapOf("token" to token ,"Expires in " to "6  Minutes"))
             }
@@ -81,10 +81,10 @@ fun Route.passengerFunctions(daoImplementation: DAOImplementation) {
 //                }
 
 
-                    if (result != null) {
+                    if (!(result.isNullOrEmpty())) {
                         call.respond(result.awaitAll())
                     } else {
-                        call.respond("NO DATA")
+                        call.respond("You Has Zero Booked Flights")
                     }
                 }
             }
@@ -207,6 +207,29 @@ fun Route.passengerFunctions(daoImplementation: DAOImplementation) {
                     throw UserNotFoundException("$name Does Not Have Account")
                 }
 
+            }
+        }
+        authenticate {
+            delete("cancelFlight/{id}") {
+                val flightNumber=call.parameters["id"]?: return@delete call.respondText(
+                    "Missing id",
+                    status = HttpStatusCode.BadRequest
+                )
+                val principal = call.principal<JWTPrincipal>()
+                val name = principal!!.payload.getClaim("user").asString()
+                val details = daoImplementation.getPassengerId(name)
+
+                if(details!=null) {
+                    if (daoImplementation.cancelTicket(details.id,flightNumber)){
+                        call.respond("Ticket Has Been Cancelled")
+                    }
+                    else{
+                        throw FlightNotFoundException("$name Has not Booked The Flight")
+                    }
+                }
+                else {
+                    throw UserNotFoundException("$name Does Not Have Account")
+                }
             }
         }
 

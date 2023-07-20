@@ -17,6 +17,9 @@ fun Application.configureSecurity() {
     val jwtDomain = "http://0.0.0.0:8080/"
     val jwtRealm = "ktor sample app"
     val jwtSecret = "login user"
+    val jwtSecretAd = "login Admin"
+
+
 //    val secret = config.property("jwt.secret").getString()
 //    val issuer = config.property("jwt.issuer").getString()
 //    val audience = config.property("jwt.audience").getString()
@@ -47,7 +50,7 @@ fun Application.configureSecurity() {
             realm = jwtRealm
             verifier(
                 JWT
-                    .require(Algorithm.HMAC256(jwtSecret))
+                    .require(Algorithm.HMAC256(jwtSecretAd))
                     .withAudience(jwtAudience)
                     .withIssuer(jwtDomain)
                     .build()

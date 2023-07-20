@@ -6,6 +6,7 @@ import com.example.data.request.Passenger
 import com.example.data.request.Filter
 import com.example.data.response.PassengerId
 import com.example.data.response.BookDetailsOut
+import com.example.data.response.PassengerDetails
 import com.example.data.response.PassengerLogin
 
 interface DAOInterface {
@@ -22,6 +23,8 @@ interface DAOInterface {
     suspend fun filterBySourceDestination(details:Filter):List<Flight>
     suspend fun userLogin(login: PassengerLogin):List<PassengerLogin>
     suspend fun removeUser(id: Int):Boolean
+    suspend fun cancelTicket(id:Int,flightId: String):Boolean
+    suspend fun getAllPassengers():List<PassengerDetails>
 
 
 
